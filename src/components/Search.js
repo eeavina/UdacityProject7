@@ -1,7 +1,7 @@
 import React from 'react'
-import Shelf from './Shelf'
-import * as BooksAPI from '../BooksAPI'
 import { Link } from 'react-router-dom'
+import * as BooksAPI from '../BooksAPI'
+import Shelf from './Shelf'
 
 class Search extends React.Component {
     constructor(props) {
@@ -17,7 +17,7 @@ class Search extends React.Component {
         const query = event.target.value;
         this.setState({ query });
 
-        // start searching
+        // Start searching
         if (query) {
             BooksAPI.search(query).then(books => {
                 if (books.length > 0) {
@@ -27,12 +27,12 @@ class Search extends React.Component {
                     this.setState({ bookQuery: [], searchError: true });
                 }
             });
-            // reset state
+            // Reset state
         } else this.setState({ bookQuery: [], searchError: false });
     };
 
     changeShelves = (selectedBook, shelf) => {
-        //console.log('before',selectedBook.shelf);
+        //console.log('before', selectedBook.shelf);
         //console.log('after', shelf);
         selectedBook.shelf = shelf;
 
@@ -42,36 +42,34 @@ class Search extends React.Component {
         BooksAPI.update(selectedBook, shelf);
     }
 
+    // Collects both the parent state books via props and the latest book array,
+    // compares the two and updates the book shelf states accordingly
     checkBookStatus = (books) => {
-        let allBooks = this.props.allBooks;
-        let currentlyReading = allBooks.filter(book => book.shelf === 'currentlyReading').map(book => book.id);
-        let wantToRead = allBooks.filter(book => book.shelf === 'wantToRead').map(book => book.id);
-        let read = allBooks.filter(book => book.shelf === 'read').map(book => book.id);
-        //console.log('allBooks',allBooks);
-        //console.log('books',books);
-        //console.log('currentlyReading',currentlyReading);
-
-        for (var i = 0; i < books.length; i++) {
-            if (currentlyReading.includes(books[i].id)) {
-                books[i].shelf = 'currentlyReading';
-                //console.log('found 1 currentlyReading');
-            } else if (wantToRead.includes(books[i].id)) {
-                books[i].shelf = 'wantToRead';
-                //console.log('found 1 wantToRead');
-            } else if (read.includes(books[i].id)) {
-                books[i].shelf = 'read';
-                //console.log('found 1 read', books[i]);
-            } else {
-                books[i].shelf = 'none';
-                //console.log('not found 1');
+        const allBooks = this.props.allBooks;
+        const filteredBooks = books.map(book => {
+            for (var i = 0; i < allBooks.length; i++) {
+                if (book.id === allBooks[i].id) {
+                    book.shelf = allBooks[i].shelf;
+                }
             }
-        }
+            return book;
+        });
+        const response = filteredBooks.map(book => {
+            if (typeof book.shelf === 'undefined') {
+                book.shelf = 'none';
+            }        
+            return book;
+        });
+        //console.log('books', books);
+        //console.log('allBooks', allBooks);
+        //console.log('filteredBooks', filteredBooks);
+
+        return response;
     }
 
     render() {
         const query = this.state.query;
-        const shelf = this.state.bookQuery;
-        const none = shelf.filter(book => book.shelf === 'none');
+        const none = this.state.bookQuery;
 
         return (<div className="search-books">
             <div className="search-books-bar">

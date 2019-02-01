@@ -41,3 +41,7 @@ MyReads: A Book Tracking App
 
 # Contributing
 This repository used a starter code that was provided for _all_ Udacity students. I should not accept any pull requests. No thank you, but thank you.
+
+# Resources used and greatly appreciated
+* Knowledge forum @ https://knowledge.udacity.com/?nanodegree=5ccda402-496f-11e8-b4ff-439352d5243c&page=1&query=myreads&sort=RELEVANCE
+* Starter code @ https://github.com/udacity/reactnd-project-myreads-starter
